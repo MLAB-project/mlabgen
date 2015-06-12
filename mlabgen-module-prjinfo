@@ -1,0 +1,14 @@
+#! /usr/bin/python3
+
+import mlabgen
+from sys import argv
+
+descr = mlabgen.dict_str_rm("\n", mlabgen.descr2dict(open(argv[1], "r").readlines()))
+descr = mlabgen.dict_str_rm("\\\\n", descr)
+
+prjinfo = {"DescriptionLong" : descr["Comment2"],
+           "HumanName" : input("HumanName: "),
+           "BuyUst" : input("BuyUst: "),
+           "BuyTindie" : input("BuyTindie: ")}
+
+open(argv[2], "w").write(mlabgen.dict2prjinfo(prjinfo))
