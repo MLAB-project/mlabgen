@@ -1,14 +1,14 @@
-<<<<<<< HEAD
 from bs4 import BeautifulSoup
 from string import Template
-
-def descr2dict(descr_lines):
-=======
 import io
 import re
 
-def descr2dict(descr):
->>>>>>> 32ccc823584699460354794c543f2fa6ae0bc9b8
+PRJINFORE = re.compile('\[(?P<Key>[a-z,A-Z,0-9,\-\_\.]+)\]'
+                       + '\s*(?P<Value>.*?)\s*'
+                       + '(?=\[(?:[a-z,A-Z,0-9,\-\_\.]+)\])', flags=re.S|re.U)
+
+
+def descr2dict(descr_lines):
     outdict = {}
 
     for line in descr_lines:
@@ -57,10 +57,6 @@ def html_prettify(html, indent_level=4):
     for line in BeautifulSoup(html).prettify().split("\n"):
             outstr += " " * (indent_level - 1) * count_char_row(" ", line) + line + "\n"
     return outstr
-
-PRJINFORE = re.compile('\[(?P<Key>[a-z,A-Z,0-9,\-\_\.]+)\]'
-                       + '\s*(?P<Value>.*?)\s*'
-                       + '(?=\[(?:[a-z,A-Z,0-9,\-\_\.]+)\])', flags=re.S|re.U)
 
 def prjinfo2dict(path):
     content = io.open(path, encoding='utf-8-sig').read()
