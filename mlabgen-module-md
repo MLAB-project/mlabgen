@@ -1,24 +1,18 @@
 #! /usr/bin/python3
 
+from utils import gerbdim
 import mlabgen
 from sys import argv
+from string import Template
 
-descr = mlabgen.dict_str_rm("\n", mlabgen.descr2dict(open(argv[1], "r").readlines()))
+if ("-h" in argv) or (len(argv) < 2):
+    print("Usage: mlabgen-module-md [-h] [MARKDOWN] [GERBER] [SCH] [PRJINFO] [OUT]")
+    exit()
 
-try:
-    md = open(argv[2], "r+")
-except FileNotFoundError:
-    md = open(argv[2], "w")
+dim = gerbdim(argv[2])
+dim = "{} x {} mm".format(round(dim[0], 2), round(dim[1], 2))
+substitute = {"author" : mlabgen.dict_str_rm("\n", mlabgen.descr2dict(mlabgen.sch2descr(open(argv[3], "r").read())))["Comment3"][1:-1],
+              "dimensions" : dim,
+              "title": mlabgen.prjinfo2dict(argv[4])["HumanName"]} 
 
-mdlines = md.readlines()
-md.seek(0)
-
-for line in mdlines:
-    if ("Author: " == line[0:8]) or ("Dimensions: " == line[0:12]):
-        mdlines.remove(str(line))
-
-
-mdlines.append("Author: {}\n".format(descr["Comment3"]))
-mdlines.append("Dimensions: {}\n".format(input("Dimensions: ")))
-md.writelines(mdlines)
-md.close()
+open(argv[5], "w").write(Template(open(argv[1], "r").read()).safe_substitute(substitute))
