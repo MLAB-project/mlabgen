@@ -1,0 +1,32 @@
+#! /usr/bin/python3
+
+from sys import argv
+from string import Template
+import mlabgen
+import markdown
+from markdown.extensions.extra import ExtraExtension
+from markdown.extensions.abbr import AbbrExtension
+from markdown.extensions.fenced_code import FencedCodeExtension
+from markdown.extensions.tables import TableExtension
+from markdown.extensions.smart_strong import SmartEmphasisExtension
+from markdown.extensions.codehilite import CodeHiliteExtension
+from markdown.extensions.nl2br import Nl2BrExtension
+
+if ("-h" in argv) or (len(argv) < 2):
+    print("usage: mlabgen-module-htm [-h] [HTML] [PRJINFO] [MARKDOWN] [MATHJAX] [OUT]")
+    exit()
+
+markdown.output_format = "html5"
+
+substitute = {"title" : mlabgen.prjinfo2dict(argv[2])["HumanName"],
+              "text" : markdown.markdown(open(argv[3], "r").read(), extensions=[ExtraExtension(),
+                                                                                AbbrExtension(),
+                                                                                FencedCodeExtension(),
+                                                                                TableExtension(),
+                                                                                SmartEmphasisExtension(),
+                                                                                CodeHiliteExtension(linenums=True),
+                                                                                Nl2BrExtension(),
+                                                                                "markdown_checklist.extension"]),
+              "mathjax" : argv[4]}
+
+open(argv[5], "w").write(Template(open(argv[1], "r").read()).safe_substitute(substitute))
