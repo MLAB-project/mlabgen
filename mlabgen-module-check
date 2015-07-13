@@ -1,0 +1,31 @@
+#! /usr/bin/python3
+
+import mlabgen
+from sys import argv
+from enchant.checker import SpellChecker
+from enchant.tokenize import EmailFilter, URLFilter, WikiWordFilter
+
+if ("-h" in argv) or (len(argv) < 2):
+    print("usage: mlabgen-module-check [-h] [MARKDOWN] [PRJINFO] [SCH]")
+    exit()
+ 
+chkr = SpellChecker("en_GB", filters=[EmailFilter, URLFilter, WikiWordFilter])
+
+for word in mlabgen.wordlist:
+    chkr.add(word)
+
+for path in argv[1:2]:
+    print(path)
+    lines = open(path, "r").readlines()
+    for line in lines:
+        chkr.set_text(line)
+        for err in chkr:
+            print("ERR {},{} {} maybe {}".format(lines.index(line), line.index(err.word), err.word, chkr.suggest(err.word)[:10]))
+
+print(argv[3])
+descr = mlabgen.dict_str_rm("\n", mlabgen.descr2dict(mlabgen.sch2descr(open(argv[2], "r").read())))
+
+for key in descr.keys():
+    chkr.set_text(descr[key])
+    for err in chkr:
+        print("ERR {},{} {} maybe {}".format(key, descr[key].index(err.word), err.word, chkr.suggest(err.word)[:10]))

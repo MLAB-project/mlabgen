@@ -3,6 +3,8 @@ from string import Template
 import io
 import re
 
+wordlist = ["MLAB", "LABoratory", "argv", "argc", "printf", "sqrt"]
+
 PRJINFORE = re.compile('\[(?P<Key>[a-z,A-Z,0-9,\-\_\.]+)\]'
                        + '\s*(?P<Value>.*?)\s*'
                        + '(?=\[(?:[a-z,A-Z,0-9,\-\_\.]+)\])', flags=re.S|re.U)
