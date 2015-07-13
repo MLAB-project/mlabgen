@@ -13,7 +13,7 @@ from markdown.extensions.codehilite import CodeHiliteExtension
 from markdown.extensions.nl2br import Nl2BrExtension
 
 if ("-h" in argv) or (len(argv) < 2):
-    print("usage: mlabgen-module-htm [-h] [HTML] [PRJINFO] [MARKDOWN] [MATHJAX] [OUT]")
+    print("usage: mlabgen-module-html [-h] [HTML] [PRJINFO] [MARKDOWN] [MATHJAX] [OUT]")
     exit()
 
 markdown.output_format = "html5"
