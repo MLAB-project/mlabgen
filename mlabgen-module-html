@@ -4,6 +4,7 @@ from sys import argv
 from string import Template
 import mlabgen
 import markdown
+from json import loads
 from markdown.extensions.extra import ExtraExtension
 from markdown.extensions.abbr import AbbrExtension
 from markdown.extensions.fenced_code import FencedCodeExtension
@@ -13,7 +14,7 @@ from markdown.extensions.codehilite import CodeHiliteExtension
 from markdown.extensions.nl2br import Nl2BrExtension
 
 if ("-h" in argv) or (len(argv) < 2):
-    print("usage: mlabgen-module-html [-h] [HTML] [PRJINFO] [MARKDOWN] [MATHJAX] [OUT]")
+    print("usage: mlabgen-module-html [-h] [HTML] [PRJINFO] [MARKDOWN] [MATHJAX] [OUT] [SUBSTITUTE (optional)]")
     exit()
 
 markdown.output_format = "html5"
@@ -28,5 +29,10 @@ substitute = {"title" : mlabgen.prjinfo2dict(argv[2])["HumanName"],
                                                                                 Nl2BrExtension(),
                                                                                 "markdown_checklist.extension"]),
               "mathjax" : argv[4]}
+
+try:
+    substitute.update(loads(argv[6]))
+except IndexError:
+    pass
 
 open(argv[5], "w").write(Template(open(argv[1], "r").read()).safe_substitute(substitute))
