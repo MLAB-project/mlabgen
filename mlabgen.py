@@ -4,7 +4,7 @@ import io
 import re
 
 wordlist = ["MLAB", "LABoratory", "argv", "argc", "printf", "sqrt", "mA", "svg", "Descr", "bom", "sw", "ama",
-            "Pcb", "pcb", "heatsink", "heatsinks", "microcontroler"]
+            "Pcb", "pcb", "heatsink", "heatsinks", "microcontroler", "Tindie"]
 
 PRJINFORE = re.compile('\[(?P<Key>[a-z,A-Z,0-9,\-\_\.]+)\]'
                        + '\s*(?P<Value>.*?)\s*'
