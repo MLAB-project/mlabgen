@@ -1,10 +1,13 @@
 from bs4 import BeautifulSoup
 from string import Template
+from os import walk
+from os.path import join
 import io
 import re
 
 wordlist = ["MLAB", "LABoratory", "argv", "argc", "printf", "sqrt", "mA", "svg", "Descr", "bom", "sw", "ama",
-            "Pcb", "pcb", "heatsink", "heatsinks", "microcontroler", "Tindie"]
+            "Pcb", "pcb", "heatsink", "heatsinks", "microcontroler", "microcontroler's", "Tindie", "HumanName",
+            "Mlab", "www", "nTwo", "cz", "mlab", "utf"]
 
 PRJINFORE = re.compile('\[(?P<Key>[a-z,A-Z,0-9,\-\_\.]+)\]'
                        + '\s*(?P<Value>.*?)\s*'
@@ -50,3 +53,8 @@ def prjinfo2dict(path):
     content = io.open(path, encoding='utf-8-sig').read()
     content = '\n'.join([x for x in content.split('\n') if not x.strip().startswith('//')]).strip()
     return dict(re.findall(PRJINFORE, content))
+
+def lspath(directory="./"):
+    for root, dirs, files in walk(directory):
+        for item in dirs + files:
+            yield(join(root, item))

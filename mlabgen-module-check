@@ -14,7 +14,7 @@ chkr = SpellChecker("en_GB", filters=[EmailFilter, URLFilter, WikiWordFilter])
 for word in mlabgen.wordlist:
     chkr.add(word)
 
-for path in argv[1:2]:
+for path in argv[1:3]:
     print(path)
     lines = open(path, "r").readlines()
     for line in lines:
@@ -23,8 +23,7 @@ for path in argv[1:2]:
             print("ERR {},{} {} maybe {}".format(lines.index(line), line.index(err.word), err.word, chkr.suggest(err.word)[:10]))
 
 print(argv[3])
-descr = mlabgen.dict_str_rm("\n", mlabgen.descr2dict(mlabgen.sch2descr(open(argv[2], "r").read())))
-
+descr = mlabgen.dict_str_rm("\n", mlabgen.descr2dict(mlabgen.sch2descr(open(argv[3], "r").read())))
 for key in descr.keys():
     chkr.set_text(descr[key])
     for err in chkr:

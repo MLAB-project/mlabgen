@@ -4,15 +4,17 @@ from utils import gerbdim
 import mlabgen
 from sys import argv
 from string import Template
+from os.path import abspath
 
-if ("-h" in argv) or (len(argv) < 2):
+if ("-h" in argv) or (len(argv) < 5):
     print("Usage: mlabgen-module-md [-h] [MARKDOWN] [GERBER] [SCH] [PRJINFO] [OUT]")
     exit()
 
 dim = gerbdim(argv[2])
-dim = "{} x {} mm".format(round(dim[0], 2), round(dim[1], 2))
-substitute = {"author" : mlabgen.dict_str_rm("\n", mlabgen.descr2dict(mlabgen.sch2descr(open(argv[3], "r").read())))["Comment3"][1:-1],
-              "dimensions" : dim,
-              "title": mlabgen.prjinfo2dict(argv[4])["HumanName"]} 
+dim = "{} x {}".format(round(dim[0], 2), round(dim[1], 2))
+substitute = {"Author" : mlabgen.dict_str_rm("\n", mlabgen.descr2dict(mlabgen.sch2descr(open(argv[3], "r").read())))["Comment3"][1:-1],
+              "Dimensions" : dim,
+              "Module" : abspath(argv[4]).split("/")[-2]}
+substitute.update(mlabgen.prjinfo2dict(argv[4]))
 
 open(argv[5], "w").write(Template(open(argv[1], "r").read()).safe_substitute(substitute))

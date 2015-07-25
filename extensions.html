@@ -1,0 +1,88 @@
+<html>
+    <head>
+        <meta charset=utf-8/>
+        
+        <link rel="stylesheet" type="text/css" href="/home/ondra6ak/Documents/mlabgen/style.css">
+        
+        <title>
+            Mlab|Human friendly name of the module
+        </title>
+        
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({extensions: ["asciimath2jax.js"],
+                                jax: ["input/AsciiMath",  "output/CommonHTML"],
+                                asciimath2jax: {delimiters: [['$M','M$']]},
+                                CommonHTML: {mtextFontInherit: true},
+                                showProcessingMessages: false,
+                                messageStyle: "none",
+                                showMathMenu: false});
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
+    </head>
+    </head>
+    <body>
+        <h1>Markdown extensions</h1>
+<h2>Abbreviation</h2>
+<p>The <abbr title="Modular LABoratory">MLAB</abbr> project is truly awesome!</p>
+<h2>Code</h2>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="codehilite"><pre><span class="kn">import</span> <span class="nn">markdown</span>
+<span class="k">while</span> <span class="k">True</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s">&quot;Hello&gt;&quot;</span><span class="p">))</span>
+</pre></div>
+</td></tr></table>
+
+<p>Inline code <code>is also cool</code></p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="codehilite"><pre><span class="cp">#include &lt;stdio.h&gt;</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="n">argv</span><span class="o">**</span><span class="p">,</span> <span class="n">argc</span><span class="o">**</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello World</span><span class="se">\n\r</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<h2>Sprites</h2>
+<p>!begx;begy;endx;endy;!(path_to_img)</p>
+<p>begx, begy - top left corner of the selection in millimeters<br />
+endx, endy - bottom right corner of the selection in millimeters</p>
+<h2>It's always cool to have equations in docs</h2>
+<p>AsciiMath is realy neat format.<br />
+When $Ma != 0M$, there are two solutions to $M ax^2 + bx + c = 0 M$ and they are </p>
+<p>$M x = (-b +- sqrt(b^2-4ac))/(2a) . M$</p>
+<h2>Table</h2>
+<table>
+<thead>
+<tr>
+<th>First Header</th>
+<th>Second Header</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Content Cell</td>
+<td>Content Cell</td>
+</tr>
+<tr>
+<td>Content Cell</td>
+<td>Content Cell</td>
+</tr>
+</tbody>
+</table>
+<h2>Checklist</h2>
+<ul class="checklist">
+<li><input type="checkbox" disabled> Task1</li>
+<li><input type="checkbox" disabled checked> Task2</li>
+<li><input type="checkbox" disabled> Task3</li>
+</ul>
+<h2>Newline 2 break</h2>
+<p>This is first line<br />
+This is second line</p>
+    </body>
+</html>

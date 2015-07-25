@@ -1,0 +1,24 @@
+#! /usr/bin/python3
+
+import mlabgen
+from os.path import basename, isdir
+from os import mkdir
+from shutil import copyfile
+from sys import argv
+
+if ("-h" in argv) or (len(argv) < 2):
+    print("usage: mlabgen-module-init [-h] [MODULE] [TEMPLATE optional]")
+    exit()
+
+try: mkdir(argv[1])
+except FileExistsError: pass
+
+try: template = argv[2]
+except IndexError: template = "/usr/share/mlabgen/module"
+
+for item in mlabgen.lspath(template):
+    if isdir(item):
+        try: mkdir(item[item.find("module"):].replace("module", argv[1]))
+        except FileExistsError: pass
+    else:
+        copyfile(item, item[item.find("module"):].replace("module", argv[1]))

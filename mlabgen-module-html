@@ -4,7 +4,7 @@ from sys import argv
 from string import Template
 import mlabgen
 import markdown
-from json import loads
+from os.path import abspath
 from markdown.extensions.extra import ExtraExtension
 from markdown.extensions.abbr import AbbrExtension
 from markdown.extensions.fenced_code import FencedCodeExtension
@@ -12,27 +12,24 @@ from markdown.extensions.tables import TableExtension
 from markdown.extensions.smart_strong import SmartEmphasisExtension
 from markdown.extensions.codehilite import CodeHiliteExtension
 from markdown.extensions.nl2br import Nl2BrExtension
+from markdown_sch import SchExtension
 
 if ("-h" in argv) or (len(argv) < 2):
-    print("usage: mlabgen-module-html [-h] [HTML] [PRJINFO] [MARKDOWN] [MATHJAX] [OUT] [SUBSTITUTE (optional)]")
+    print("usage: mlabgen-module-html [-h] [HTML] [PRJINFO] [MARKDOWN] [OUT]")
     exit()
 
 markdown.output_format = "html5"
 
-substitute = {"title" : mlabgen.prjinfo2dict(argv[2])["HumanName"],
-              "text" : markdown.markdown(open(argv[3], "r").read(), extensions=[ExtraExtension(),
-                                                                                AbbrExtension(),
-                                                                                FencedCodeExtension(),
-                                                                                TableExtension(),
-                                                                                SmartEmphasisExtension(),
-                                                                                CodeHiliteExtension(linenums=True),
-                                                                                Nl2BrExtension(),
-                                                                                "markdown_checklist.extension"]),
-              "mathjax" : argv[4]}
+substitute = {"Text": markdown.markdown(open(argv[3], "r").read(), extensions=[ExtraExtension(),
+                                                                               AbbrExtension(),
+                                                                               FencedCodeExtension(),
+                                                                               TableExtension(),
+                                                                               SmartEmphasisExtension(),
+                                                                               CodeHiliteExtension(linenums=True),
+                                                                               Nl2BrExtension(),
+                                                                               "markdown_checklist.extension",
+                                                                               SchExtension()]),
+              "Module": abspath(argv[2]).split("/")[-2]}
+substitute.update(mlabgen.prjinfo2dict(argv[2]))
 
-try:
-    substitute.update(loads(argv[6]))
-except IndexError:
-    pass
-
-open(argv[5], "w").write(Template(open(argv[1], "r").read()).safe_substitute(substitute))
+open(argv[4], "w").write(Template(open(argv[1], "r").read()).safe_substitute(substitute))

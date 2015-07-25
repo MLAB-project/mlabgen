@@ -1,9 +1,5 @@
-$title
-======
-
-Responsible: $author
-
-Dimensions: $dimensions
+Markdown extensions
+===================
 
 Abbreviation
 ------------
@@ -32,6 +28,14 @@ int main(argv**, argc**) {
     return 0
 }
 ```
+
+Sprites
+-------
+
+!begx;begy;endx;endy;!(path_to_img)
+
+begx, begy - top left corner of the selection in millimeters
+endx, endy - bottom right corner of the selection in millimeters
 
 It's always cool to have equations in docs
 ------------------------------------------

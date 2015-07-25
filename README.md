@@ -9,4 +9,5 @@ Dependecies
 
  * python3
  * python3-pygments
+ * wkhtmltopdf
 
