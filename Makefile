@@ -10,6 +10,7 @@ install:
 	cp mlabgen-module-md      /usr/bin/
 	cp mlabgen-module-prjinfo /usr/bin/
 	cp mlabgen.py             /usr/lib/python3/dist-packages/
+	cp markdown_sch.py        /usr/lib/python3/dist-packages/
 	cp mlabgen.mk             /usr/include/
 	mkdir -p /usr/share/mlabgen
 	cp -r module              /usr/share/mlabgen/
@@ -18,6 +19,7 @@ install:
 uninstall:
 	rm -f /usr/bin/mlabgen*
 	rm -rf /usr/lib/python3/dist-packages/mlabgen.py
+	rm -rf /usr/lib/python3/dist-packages/markdown_sch.py
 	rm -rf /usr/include/mlabgen.mk
 	rm -rf /usr/share/mlabgen
 
