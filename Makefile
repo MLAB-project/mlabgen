@@ -1,8 +1,10 @@
 install:
 	git submodule update --init --recursive
-	cd markdown-checklist; python3 setup.py install; cd ..;
-	cd ../Python-Markdown; python3 setup.py install; cd ..;
-	cd ../utils; make install; cd ..;
+	@cd pygments; python3 setup.py install; cd ..;
+	@cd markdown-checklist; python3 setup.py install; cd ..;
+	@cd Python-Markdown; python3 setup.py install; cd ..;
+	@cd utils; make install; cd ..;
+	@cd pyenchant; python3 setup.py install; cd ..;
 	cp mlabgen-module-check   /usr/bin/
 	cp mlabgen-module-html    /usr/bin/
 	cp mlabgen-module-init    /usr/bin/
