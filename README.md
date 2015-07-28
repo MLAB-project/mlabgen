@@ -28,6 +28,8 @@ mlabgen-module-init NAMEVERREV
 How to generate documentation
 -----------------------------
 
+In the module's directory execute:
+
 ```sh
 make
 ```
