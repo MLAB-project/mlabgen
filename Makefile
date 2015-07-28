@@ -1,3 +1,5 @@
+all: install
+
 install:
 	git submodule update --init --recursive
 	@cd pygments; python3 setup.py install; cd ..;
@@ -16,4 +18,10 @@ install:
 	cp -r module              /usr/share/mlabgen/
 	cp style.css              /usr/share/mlabgen/
 
-.PHONY: install
+uninstall:
+	rm -f /usr/bin/mlabgen*
+	rm -rf /usr/lib/python3/dist-packages/mlabgen.py
+	rm -rf /usr/include/mlabgen.mk
+	rm -rf /usr/share/mlabgen
+
+.PHONY: install uninstall
