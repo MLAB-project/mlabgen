@@ -10,3 +10,6 @@
 [submodule "pygments"]
 	path = pygments
 	url = ./pygments
+[submodule "pyenchant"]
+	path = pyenchant
+	url = https://github.com/rfk/pyenchant.git
