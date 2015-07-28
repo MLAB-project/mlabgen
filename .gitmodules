@@ -7,3 +7,6 @@
 [submodule "Python-Markdown"]
 	path = Python-Markdown
 	url = https://github.com/waylan/Python-Markdown.git
+[submodule "pygments"]
+	path = pygments
+	url = ./pygments
