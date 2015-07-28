@@ -5,4 +5,4 @@ TARGETS = DOC/$(MODULE).html \
 
 MATHJAX = /home/ondra6ak/Documents/MathJax/MathJax.js 
 
-include ../mlabgen.mk
+include mlabgen.mk
