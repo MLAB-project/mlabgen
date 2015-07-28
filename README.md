@@ -8,7 +8,7 @@ Dependecies
 -----------
 
  * python3
- * pip3
+ * python3-pip
  * make
  * wkhtmltopdf
 
