@@ -1,0 +1,37 @@
+#! /usr/bin/python3
+
+import mlabgen
+from sys import argv
+from os import chdir, listdir
+from os.path import abspath
+from string import Template
+
+if ("-h" in argv) or (len(argv) < 3):
+    print("usage: mlabgen-dir-html [HTML] [DIRINFO] [OUT] [DIR optional]")
+    exit()
+
+try: chdir(argv[4])
+except IndexError: pass
+
+index = open(argv[1], "r").read()
+beg = index.find("$$") + 2
+index_line = index[beg:beg + index[beg:].rfind("$$")]
+table = ""
+
+for module in listdir():
+    try:
+        prjinfo = mlabgen.prjinfo2dict(module + "/PrjInfo.txt")
+    except FileNotFoundError:
+        try: prjinfo = mlabgen.prjinfo2dict(module + "/DirInfo.txt")
+        except FileNotFoundError: prjinfo = {"Dev": "True"}
+    except NotADirectoryError:
+        prjinfo = {"Dev": "True"}
+
+    if prjinfo["Dev"] != "True":
+        prjinfo["Module"] = module
+        table += Template(index_line).safe_substitute(prjinfo) + "\n"
+
+prjinfo = mlabgen.prjinfo2dict(argv[2])
+prjinfo["Module"] = abspath(argv[2]).split("/")[-2]
+
+open(argv[3], "w").write(Template(index.replace(index_line, table).replace("$$", "")).safe_substitute(prjinfo))
