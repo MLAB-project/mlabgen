@@ -1,0 +1,14 @@
+<head>
+    <meta charset = "utf-8"/>
+    <title> Mlab|$HumanName </title>
+</head>
+<body>
+    <h1>$HumanName</h2>
+    <p>
+        $Descr
+    </p>
+
+    <table>
+        $$ <tr> <td><img src = "$Module/icon.png"></td> <td> <h2>$HumanName</h2> <p>$Descr</p> </td></tr> $$
+    </table>
+</body>

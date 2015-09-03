@@ -18,20 +18,27 @@ beg = index.find("$$") + 2
 index_line = index[beg:beg + index[beg:].rfind("$$")]
 table = ""
 
-for module in listdir():
+modules = {}
+
+ls = listdir()
+ls.sort()
+for module in ls:
     try:
-        prjinfo = mlabgen.prjinfo2dict(module + "/PrjInfo.txt")
-    except FileNotFoundError:
-        try: prjinfo = mlabgen.prjinfo2dict(module + "/DirInfo.txt")
-        except FileNotFoundError: prjinfo = {"Dev": "True"}
+        if "PrjInfo.txt" in listdir(module):
+            prjinfo = mlabgen.prjinfo2dict(module + "/PrjInfo.txt")
+            if prjinfo["Dev"] == "False":
+                prjinfo["Module"] = module
+                modules[module[:-3]] = prjinfo
+        elif "DirInfo.txt" in listdir(module):
+            prjinfo = mlabgen.prjinfo2dict(module + "/DirInfo.txt")
+            if prjinfo["Dev"] == "False":
+                prjinfo["Module"] = module
+                modules[module] = prjinfo
     except NotADirectoryError:
-        prjinfo = {"Dev": "True"}
+        pass
 
-    if prjinfo["Dev"] != "True":
-        prjinfo["Module"] = module
-        table += Template(index_line).safe_substitute(prjinfo) + "\n"
+for module in modules:
+    table += Template(index_line).safe_substitute(modules[module])
 
-prjinfo = mlabgen.prjinfo2dict(argv[2])
-prjinfo["Module"] = abspath(argv[2]).split("/")[-2]
 
-open(argv[3], "w").write(Template(index.replace(index_line, table).replace("$$", "")).safe_substitute(prjinfo))
+open(argv[3], "w").write(Template(index.replace(index_line, table).replace("$$", "")).safe_substitute(mlabgen.prjinfo2dict(argv[2])))
