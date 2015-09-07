@@ -6,7 +6,7 @@ from os import chdir, listdir
 from os.path import join
 from string import Template
 
-if ("-h" in argv) or (len(argv) < 3):
+if ("-h" in argv) or (len(argv) < 4):
     print("usage: mlabgen-dir-html [HTML] [DIRINFO] [OUT] [DIR]")
     exit()
 
