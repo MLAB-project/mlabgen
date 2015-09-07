@@ -7,6 +7,7 @@ install: utils
 	cp mlabgen-module-init    /usr/bin/
 	cp mlabgen-module-md      /usr/bin/
 	cp mlabgen-module-prjinfo /usr/bin/
+	cp mlabgen-dir-html       /usr/bin/
 	cp mlabgen.py             /usr/lib/python3/dist-packages/
 	cp markdown_sch.py        /usr/lib/python3/dist-packages/
 	cp mlabgen.mk             /usr/include/
