@@ -1,7 +1,8 @@
-all: install
+all: utils
 
 install: utils
 	pip3 install pygments pyenchant markdown markdown_checklist
+	cd utils; make install
 	cp mlabgen-module-check   /usr/bin/
 	cp mlabgen-module-html    /usr/bin/
 	cp mlabgen-module-init    /usr/bin/
@@ -18,7 +19,6 @@ install: utils
 
 utils:
 	git clone https://github.com/MLAB-project/utils.git
-	cd utils; sudo make install
 
 uninstall:
 	rm -f /usr/bin/mlabgen*
