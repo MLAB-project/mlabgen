@@ -23,7 +23,6 @@ LIBS:display
 LIBS:dsp
 LIBS:elec-unifil
 LIBS:ESD_Protection
-LIBS:freescale
 LIBS:ftdi
 LIBS:gennum
 LIBS:graphic
@@ -44,8 +43,6 @@ LIBS:microchip_pic16mcu
 LIBS:microchip_pic18mcu
 LIBS:microchip_pic32mcu
 LIBS:microcontrollers
-LIBS:mlab_header
-LIBS:mlab_mechanical
 LIBS:motor_drivers
 LIBS:motorola
 LIBS:msp430
@@ -213,12 +210,12 @@ $Comp
 L D_Small D1
 U 1 1 55622FB7
 P 9950 1200
-F 0 "D1" V 10050 1200 50  0000 R CNN
-F 1 "D_Small" V 9850 1200 50  0000 R CNN
+F 0 "D1" V 9850 1200 50  0000 R CNN
+F 1 "M4" V 10050 1150 50  0000 R CNN
 F 2 "" V 9950 1200 60  0000 C CNN
 F 3 "" V 9950 1200 60  0000 C CNN
 	1    9950 1200
-	0    -1   -1   0   
+	0    -1   1    0   
 $EndComp
 $Comp
 L C_Small C2
