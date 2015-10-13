@@ -6,11 +6,11 @@ clean:
 	@echo "CLEAN"
 	@rm -f $(TARGETS)
 
-check: DOC/SRC/$(MODULE).md.in PrjInfo.txt.in SCH_PCB/$(MODULE).sch
+check: DOC/SRC/$(MODULE).md.in PrjInfo.txt SCH_PCB/$(MODULE).sch
 	@echo "CHECK"
 	@mlabgen-module-check $^
 
-DOC/%.html: DOC/SRC/%.html.in PrjInfo.txt.in DOC/SRC/%.md
+DOC/%.html: DOC/SRC/%.html.in PrjInfo.txt DOC/SRC/%.md
 	@echo "HTML    $@"
 	@mlabgen-module-html $^ $@ 
 
