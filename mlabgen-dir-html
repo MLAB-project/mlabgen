@@ -6,37 +6,40 @@ from os import chdir, listdir
 from os.path import join
 from string import Template
 
+
 if ("-h" in argv) or (len(argv) < 4):
-    print("usage: mlabgen-dir-html [HTML] [DIRINFO] [OUT] [DIR]")
+    print("usage: mlabgen-dir-html [HTML] [DIRINFO] [DIR] [OUT]")
     exit()
 
 
-index = open(argv[1], "r").read()
-beg = index.find("$$") + 2
-index_line = index[beg:beg + index[beg:].rfind("$$")]
-table = ""
-
 modules = {}
-
-ls = listdir(argv[4])
+dirs = {}
+ls = listdir(argv[3])
 ls.sort()
-for module in ls:
+for item in ls:
     try:
-        if "PrjInfo.txt" in listdir(join(argv[4], module)):
-            prjinfo = mlabgen.prjinfo2dict(join(argv[4], module, "PrjInfo.txt"))
-            if prjinfo["Dev"] == "False":
-                prjinfo["Module"] = module
-                modules[module[:-3]] = prjinfo
-        elif "DirInfo.txt" in listdir(join(argv[4], module)):
-            prjinfo = mlabgen.prjinfo2dict(join(argv[4], module, "DirInfo.txt"))
-            if prjinfo["Dev"] == "False":
-                prjinfo["Module"] = module
-                modules[module] = prjinfo
+        if "PrjInfo.txt" in listdir(join(argv[3], item)):
+            modules[item[:-3]] = mlabgen.prjinfo2dict(join(argv[3], item, "PrjInfo.txt"))
+            modules[item[:-3]]["Module"] = item
+        elif "DirInfo.txt" in listdir(join(argv[3], item)):
+            dirs[item] = mlabgen.prjinfo2dict(join(argv[3], item, "DirInfo.txt"))
+            dirs[item]["Module"] = item
     except NotADirectoryError:
         pass
 
-for module in modules:
-    table += Template(index_line).safe_substitute(modules[module])
 
+index = ""
+if list(dirs.keys()) != []:
+    for directory in dirs.values():
+        index += Template(mlabgen.index_dirs_line).safe_substitute(directory)
 
-open(argv[3], "w").write(Template(index.replace(index_line, table).replace("$$", "")).safe_substitute(mlabgen.prjinfo2dict(argv[2])))
+if (list(dirs.keys()) != []) and (list(modules.keys()) != []):
+    index += mlabgen.index_line_sep
+
+if list(modules.keys()) != []:
+    for module in modules.values():
+        index += Template(mlabgen.index_modules_line).safe_substitute(module)
+
+dirinfo = mlabgen.prjinfo2dict(argv[2])
+dirinfo.update({"Index": index})
+open(argv[4], "w").write(Template(open(argv[1], "r").read()).safe_substitute(dirinfo))

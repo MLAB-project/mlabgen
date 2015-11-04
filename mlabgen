@@ -1,0 +1,29 @@
+#! /usr/bin/python3
+
+import mlabgen
+from os import walk, chdir, getcwd, system
+from sys import argv
+
+if "-h" in argv:
+    print("usage: mlabgen [-h] [DIR (optional)]")
+    exit()
+
+argv.append(getcwd())
+
+basedir = getcwd()
+for root, dirs, files in walk(argv[1]):
+    if "PrjInfo.txt" in files:
+        chdir(root)
+        print("MAKE   ", root)
+        system("make")
+        chdir(basedir)
+    else:
+        del dirs
+
+for root, dirs, files in walk(argv[1]):
+    if "DirInfo.txt" in files:
+        print("MLABGEN", root)
+        module = root.split("/")[-1]
+        system("mlabgen-dir-html {0}/index.html.in {0}/DirInfo.txt {0} {0}/index.html".format(root, module))
+    else:
+        del dirs

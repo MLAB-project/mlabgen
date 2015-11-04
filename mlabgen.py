@@ -1,4 +1,3 @@
-from bs4 import BeautifulSoup
 from string import Template
 from os import walk
 from os.path import join
@@ -8,6 +7,19 @@ import re
 wordlist = ["MLAB", "LABoratory", "argv", "argc", "printf", "sqrt", "mA", "svg", "Descr", "bom", "sw", "ama",
             "Pcb", "pcb", "heatsink", "heatsinks", "microcontroler", "microcontroler's", "Tindie", "HumanName",
             "Mlab", "www", "nTwo", "cz", "mlab", "utf"]
+
+index_dirs_line  = "<li><table><tr>\n"
+index_dirs_line += "    <td class=\"icon\"><a href=\"${Module}\"><img src=\"${Module}/DOC/IMG/${Module}_200x200.png\"></a></td>\n"
+index_dirs_line += "    <td class=\"descr\"><h2><a href=\"${Module}\">$HumanName</a></h2> <p>$Descr<br><a href=\"${Module}\">More...</a></p></td>\n"
+index_dirs_line += "<tr></table></li>\n"
+
+index_line_sep = "<li><hr></li>\n"
+
+index_modules_line  = "<li><table><tr>\n"
+index_modules_line += "     <td class=\"icon\"><a href=\"${Module}/DOC/${Module}.html\"><img src=\"${Module}/DOC/IMG/${Module}_200x200.png\"></a></td>\n"
+index_modules_line += "     <td class=\"descr\"><h2><a href=\"${Module}/DOC/${Module}.html\">$HumanName</a></h2> <p>$Descr<br><a href=\"${Module}/DOC/${Module}.html\">More...</a></p></td>\n"
+index_modules_line += "     <td class=\"purchase\"><a href=\"$BuyLink\">Purhcase</a></td>\n"
+index_modules_line += "</tr></table></li>\n"
 
 PRJINFORE = re.compile('\[(?P<Key>[a-z,A-Z,0-9,\-\_\.]+)\]'
                        + '\s*(?P<Value>.*?)\s*'
