@@ -1,13 +1,14 @@
 all: utils
 
 install: utils
-	pip3 install pygments pyenchant markdown markdown_checklist
+	pip install pygments pyenchant markdown markdown_checklist
 	cd utils; make install
 	cp mlabgen-module-check   /usr/bin/
 	cp mlabgen-module-html    /usr/bin/
 	cp mlabgen-module-init    /usr/bin/
 	cp mlabgen-module-md      /usr/bin/
 	cp mlabgen-module-prjinfo /usr/bin/
+	cp mlabgen-module-readme-update /usr/bin/
 	cp mlabgen-dir-html       /usr/bin/
 	cp mlabgen                /usr/bin/
 	cp mlabgen.py             /usr/lib/python3/dist-packages/

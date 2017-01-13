@@ -1,0 +1,117 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import os
+import ConfigParser
+import codecs
+import datetime
+
+mlab_rep = os.path.expanduser("~/repos/Modules/")
+if len(sys.argv) == 2:
+    mlab_rep = sys.argv[1]
+else:
+    print "nastavena vychozi adresa pro parserovani:", mlab_rep
+    print "mlab-module-readme-update [adresa repozitare]"
+
+for root, dirs, files in os.walk(mlab_rep):
+    for file in files:
+        if file.endswith('PrjInfo.txt'):
+            #print "##############################"
+
+            prjDir = root[26:]
+            project = os.path.basename(root)
+            dirname = os.path.dirname(root)
+            prjInfo = open(root+'/'+file).read()
+            #print root, dirs, project, dirname
+            
+            enDesc = prjInfo.find('[InfoShortDescription.en]')
+            csDesc = prjInfo.find('[InfoShortDescription.cs]')
+            enLong = prjInfo.find('[InfoLongDescription.en]')
+            csLong = prjInfo.find('[InfoLongDescription.cs]')
+            enUST  = prjInfo.find('[InfoBuyUST]')
+            end    = prjInfo.find('[end]')
+
+            LeadImg = False
+            try:
+                for img_root, img_dirs, img_files in os.walk(root+'/DOC/SRC/img/'):     # standartni umisteni v /DOC/SRC/img/modul_top_.jpg
+                    for img in img_files:
+                        if '_top_' in img.lower():
+                            LeadImg = "DOC/SRC/img/"+img
+
+                if LeadImg == False:
+                    for img_root, img_dirs, img_files in os.walk(root):    # umisteni v rootu modulu
+                        for img in img_files:
+                            if '_top_small' in img.lower():
+                                LeadImg = img
+
+                if LeadImg == False:
+                    for img_root, img_dirs, img_files in os.walk(root):     # maly obrazek v rootu bez oznaceni top
+                        for img in img_files:
+                            if 'small' in img.lower():
+                                LeadImg = img
+
+                if LeadImg == False:
+                    for img_root, img_dirs, img_files in os.walk(root+'/'):     #jakykoliv obrazek ve slozce modulu, ktery v nazvu obsahuje top
+                        for img in img_files:
+                            if '_top_' in img.lower():
+                                LeadImg[:61] = img_root+img
+
+                if LeadImg == False:
+                    print project, '\t\t', prjDir           # vypsat modul bez obrazku
+
+            except Exception, e:
+                #print e
+                pass
+
+            if enUST == -1:
+                d_enDesc = prjInfo[enDesc+25:csDesc].strip()
+                #print ">>>>>"
+                d_csDesc = prjInfo[csDesc+25:enLong].strip()
+                #print ">>>>>"
+                d_enLong = prjInfo[enLong+24:csLong].strip()
+                #print ">>>>>"
+                d_csLong = prjInfo[csLong+24:end].strip()
+                #print ">>>>>"
+                d_ust = None
+
+            else:
+
+                d_enDesc = prjInfo[enDesc+25:csDesc].strip()
+                #print ">>>>>"
+                d_csDesc = prjInfo[csDesc+25:enLong].strip()
+                #print ">>>>>"
+                d_enLong = prjInfo[enLong+24:csLong].strip()
+                #print ">>>>>"
+                d_csLong = prjInfo[csLong+24:end].strip()
+                #print ">>>>>"
+                d_ust = prjInfo[enUST+12:end].strip()
+
+            out = ""
+            out += "<!--- PrjInfo ---> <!--- Please remove this line after manually editing --->\n"
+            out += "<!--- 00a56be08b96043df9e37d6aff7b6990 --->\n"
+            out += "<!--- Created:%s: ---> \n" %datetime.datetime.now().strftime("%Y%m%d-%H:%M")
+            out += "<!--- Author:Mlab: ---> \n"
+            out += "<!--- AuthorEmail:mlab@mlab.cz: ---> \n"
+            out += "<!--- Tags:%s: ---> \n" %"imported"
+            out += "<!--- Ust:%s: ---> \n" %str(d_ust).rsplit('\r\n')[0]
+            out += "<!--- Name:%s: --->\n#%s \n" %(project, project)
+            out += "<!--- LongName --->\n%s\n<!--- ELongName ---> \n\n" %(d_enDesc)
+            out += "<!--- Lead --->\n%s\n<!--- ELead ---> \n\n" %(d_enLong)
+            if LeadImg:
+                out += "![LeadImg](%s) \n\n" %(LeadImg)
+            out += '''
+​
+​
+<!--- Description --->
+<!--- EDescription --->
+<!--- Content --->
+<!--- EContent --->
+            '''
+            #print out
+            #print root, enUST
+
+            f = open(root+'/'+'README.md', 'w')
+            f.write(out)
+            f.close
+
+
