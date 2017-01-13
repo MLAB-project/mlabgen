@@ -5,13 +5,14 @@ import os
 import ConfigParser
 import codecs
 import datetime
+import sys
 
 mlab_rep = os.path.expanduser("~/repos/Modules/")
 if len(sys.argv) == 2:
     mlab_rep = sys.argv[1]
 else:
     print "nastavena vychozi adresa pro parserovani:", mlab_rep
-    print "mlab-module-readme-update [adresa repozitare]"
+    print "mlab-module-readme-update [adresa repozitare] \n\n"
 
 for root, dirs, files in os.walk(mlab_rep):
     for file in files:
@@ -86,6 +87,8 @@ for root, dirs, files in os.walk(mlab_rep):
                 #print ">>>>>"
                 d_ust = prjInfo[enUST+12:end].strip()
 
+            tags = ['imported']
+
             out = ""
             out += "<!--- PrjInfo ---> <!--- Please remove this line after manually editing --->\n"
             out += "<!--- 00a56be08b96043df9e37d6aff7b6990 --->\n"
@@ -94,6 +97,10 @@ for root, dirs, files in os.walk(mlab_rep):
             out += "<!--- AuthorEmail:mlab@mlab.cz: ---> \n"
             out += "<!--- Tags:%s: ---> \n" %"imported"
             out += "<!--- Ust:%s: ---> \n" %str(d_ust).rsplit('\r\n')[0]
+            out += "<!--- Label --->\n"
+            for tag in tags: out += "![%s](http://vo.mlab.cz:5252/git/tag/img/%s.png)" %(tag, tag)
+            if d_ust != None: out += "[![Buy online](http://vo.mlab.cz:5252/git/tag/img/ust.png)](%s)" %str(d_ust).rsplit('\r\n')[0]
+            out += "<!--- ELabel ---> \n"
             out += "<!--- Name:%s: --->\n#%s \n" %(project, project)
             out += "<!--- LongName --->\n%s\n<!--- ELongName ---> \n\n" %(d_enDesc)
             out += "<!--- Lead --->\n%s\n<!--- ELead ---> \n\n" %(d_enLong)
