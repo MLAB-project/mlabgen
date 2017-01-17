@@ -8,7 +8,8 @@ install: utils
 	cp mlabgen-module-init    /usr/bin/
 	cp mlabgen-module-md      /usr/bin/
 	cp mlabgen-module-prjinfo /usr/bin/
-	cp mlabgen-module-readme-update /usr/bin/
+	cp mlabgen-module-readme-update   /usr/bin/
+	cp mlabgen-module-make-production /usr/bin/
 	cp mlabgen-dir-html       /usr/bin/
 	cp mlabgen                /usr/bin/
 	cp mlabgen.py             /usr/lib/python3/dist-packages/

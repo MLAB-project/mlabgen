@@ -95,11 +95,11 @@ for root, dirs, files in os.walk(mlab_rep):
             out += "<!--- Created:%s: ---> \n" %datetime.datetime.now().strftime("%Y%m%d-%H:%M")
             out += "<!--- Author:Mlab: ---> \n"
             out += "<!--- AuthorEmail:mlab@mlab.cz: ---> \n"
-            out += "<!--- Tags:%s: ---> \n" %"imported"
+            out += "<!--- Tags:%s: ---> \n" %"_".join(tags)
             out += "<!--- Ust:%s: ---> \n" %str(d_ust).rsplit('\r\n')[0]
             out += "<!--- Label --->\n"
-            for tag in tags: out += "![%s](http://vo.mlab.cz:5252/git/tag/img/%s.png)" %(tag, tag)
-            if d_ust != None: out += "[![Buy online](http://vo.mlab.cz:5252/git/tag/img/ust.png)](%s)" %str(d_ust).rsplit('\r\n')[0]
+            #for tag in tags: out += "![%s](http://vo.mlab.cz:5252/git/tag/img/%s.png)" %(tag, tag)
+            #if d_ust != None: out += "[![Buy online](http://vo.mlab.cz:5252/git/tag/img/ust.png)](%s)" %str(d_ust).rsplit('\r\n')[0]
             out += "<!--- ELabel ---> \n"
             out += "<!--- Name:%s: --->\n#%s \n" %(project, project)
             out += "<!--- LongName --->\n%s\n<!--- ELongName ---> \n\n" %(d_enDesc)
