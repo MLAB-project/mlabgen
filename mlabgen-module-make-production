@@ -2,9 +2,6 @@
 # -*- coding: utf-8 -*-
 
 
-#  python generate.py Sensors/SHT31V01A/SCH_PCB/SHT31V01A.kicad_pcb Sensors/SHT31V01A/SCH_PCB/SHT31V01A.sch 
-
-
 import sys
 import os
 import subprocess
@@ -26,14 +23,11 @@ rootpath, project = os.path.split(localpath)
 
 
 filename= os.path.join(localpath, 'SCH_PCB', project+'.kicad_pcb')
-print filename
 
-
-#  python generate.py Sensors/SHT31V01A/SCH_PCB/SHT31V01A.kicad_pcb Sensors/SHT31V01A/SCH_PCB/SHT31V01A.sch 
-
-
+print "Soubor projektu:", filename
 plotDir = "../new_CAM_PROFI/"
 
+print "aaaa"
 board = pcbnew.LoadBoard(filename)
 pctl = pcbnew.PLOT_CONTROLLER(board)
 
@@ -49,7 +43,7 @@ popt.SetScale(1)
 popt.SetMirror(False)
 popt.SetUseGerberAttributes(True)
 popt.SetUseGerberProtelExtensions(False)
-popt.SetExcludeEdgeLayer(False);
+popt.SetExcludeEdgeLayer(True);
 popt.SetScale(1)
 popt.SetUseAuxOrigin(True)
 
@@ -66,6 +60,7 @@ plot_plan = [
     ( "Edge_Cuts", Edge_Cuts, "Edges" ),
 ]
 
+print "zacatek generovani"
 
 for layer_info in plot_plan:
     pctl.SetLayer(layer_info[1])
@@ -73,15 +68,15 @@ for layer_info in plot_plan:
     pctl.PlotLayer()
 
     
-    pctl.SetLayer(layer_info[1])
-    pctl.OpenPlotfile(layer_info[0], PLOT_FORMAT_SVG, layer_info[2])
-    pctl.PlotLayer()
+    #pctl.SetLayer(layer_info[1])
+    #pctl.OpenPlotfile(layer_info[0], PLOT_FORMAT_SVG, layer_info[2])
+    #pctl.PlotLayer()
     #subprocess.Popen(["inkscape", "-z", "--verb=FitCanvasToDrawing", "--verb=FileSave", pctl.GetPlotFileName()])
     
 
 
 drlwriter = EXCELLON_WRITER( board )
-drlwriter.SetMapFileFormat( PLOT_FORMAT_SVG )
+drlwriter.SetMapFileFormat( PLOT_FORMAT_GERBER )
 
 mirror = False
 minimalHeader = False
@@ -123,8 +118,8 @@ pctl.PlotLayer()
 pctl.SetLayer(F_Mask)
 pctl.PlotLayer()
 #proc = subprocess.Popen(["inkscape", "--without-gui", "--verb=FitCanvasToDrawing", "--verb=FileSave", pctl.GetPlotFileName()])
-#proc = subprocess.Popen(["inkscape", "--verb=FitCanvasToDrawing", "--verb=FileSave", pctl.GetPlotFileName()])
-#proc.wait()
+proc = subprocess.Popen(["inkscape", "--verb=FitCanvasToDrawing", "--verb=FileSave", pctl.GetPlotFileName()])
+proc.wait()
 #proc = subprocess.Popen(["convert", "-density 600", pctl.GetPlotFileName(), pctl.GetPlotFileName().replace('.svg', '.png') ])
 #proc.wait()
 
@@ -134,8 +129,8 @@ pctl.OpenPlotfile("MLABb", PLOT_FORMAT_SVG, "MLAB A")
 pctl.SetLayer(B_SilkS)
 pctl.PlotLayer()
 #proc = subprocess.Popen(["inkscape", "--without-gui", "--verb=FitCanvasToDrawing", "--verb=FileSave", pctl.GetPlotFileName()])
-#proc = subprocess.Popen(["inkscape", "--verb=FitCanvasToDrawing", "--verb=FileSave", pctl.GetPlotFileName()])
-#proc.wait()
+proc = subprocess.Popen(["inkscape", "--verb=FitCanvasToDrawing", "--verb=FileSave", pctl.GetPlotFileName()])
+proc.wait()
 #proc = subprocess.Popen(["inkscape", "-z -d 600", pctl.GetPlotFileName(), '-e', pctl.GetPlotFileName().replace('.svg', '.png') ])
 #proc = subprocess.Popen(["convert", "-density 600", pctl.GetPlotFileName(), '-set density 1200', pctl.GetPlotFileName().replace('.svg', '.png') ])
 #proc.wait()
@@ -193,12 +188,9 @@ print array
 
 with open(pctl.GetPlotDirName()+'../../NewBOM.csv', 'wb') as f:
     writer = csv.writer(f, delimiter=';', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
-    #writer.writerow("ID", "Urcovatel", "Pouzdro", "pocet", "Hodnota")
     for i, part in enumerate(array):
         print (i+1,)+part
         writer.writerow((i+1,)+part)
-#array.tofile("newOut.csv", sep=';')
 
-#print sch_parts
 
 conn.commit()
