@@ -27,7 +27,6 @@ filename= os.path.join(localpath, 'SCH_PCB', project+'.kicad_pcb')
 print "Soubor projektu:", filename
 plotDir = "../new_CAM_PROFI/"
 
-print "aaaa"
 board = pcbnew.LoadBoard(filename)
 pctl = pcbnew.PLOT_CONTROLLER(board)
 
@@ -52,12 +51,12 @@ popt.SetSubtractMaskFromSilk(False)
 
 
 plot_plan = [
-    ( "F_Cu", F_Cu, "Top layer" ),
-    ( "B_Cu", B_Cu, "Bottom layer" ),
-    ( "F_SilkS", F_SilkS, "Silk top" ),
-    ( "B_Mask", B_Mask, "Mask bottom" ),
-    ( "F_Mask", F_Mask, "Mask top" ),
-    ( "Edge_Cuts", Edge_Cuts, "Edges" ),
+    ( "F.Cu", F_Cu, "Top layer" ),
+    ( "B.Cu", B_Cu, "Bottom layer" ),
+    ( "F.SilkS", F_SilkS, "Silk top" ),
+    ( "B.Mask", B_Mask, "Mask bottom" ),
+    ( "F.Mask", F_Mask, "Mask top" ),
+    ( "Edge.Cuts", Edge_Cuts, "Edges" ),
 ]
 
 print "zacatek generovani"
@@ -89,7 +88,7 @@ metricFmt = True
 drlwriter.SetFormat( metricFmt )
 
 genDrl = True
-genMap = True
+genMap = False
 drlwriter.CreateDrillandMapFilesSet( pctl.GetPlotDirName(), genDrl, genMap );
 
 
