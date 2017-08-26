@@ -1,14 +1,19 @@
 #! /usr/bin/python3
 
 import mlabgen
+import qrcode
 from os.path import basename, isdir
 from os import mkdir
+import os
 from shutil import copyfile
 from sys import argv
+import json
 
 if ("-h" in argv) or (len(argv) < 2):
     print("usage: mlabgen-module-init [-h] [MODULE] [TEMPLATE optional]")
     exit()
+module = argv[1]
+root = os.getcwd()
 
 try: mkdir(argv[1])
 except FileExistsError: pass
@@ -18,7 +23,36 @@ except IndexError: template = "/usr/share/mlabgen/module"
 
 for item in mlabgen.lspath(template):
     if isdir(item):
-        try: mkdir(item[item.find("module"):].replace("module", argv[1]))
+        try: mkdir(item[item.find("module"):].replace("module", module))
         except FileExistsError: pass
     else:
-        copyfile(item, item[item.find("module"):].replace("module", argv[1]))
+        copyfile(item, item[item.find("module"):].replace("module", module))
+
+try:
+    qr = qrcode.QRCode( version=4, error_correction=qrcode.constants.ERROR_CORRECT_Q, box_size=15, border=4)
+    qr.add_data('http://www.mlab.cz/PermaLink/'+module)
+    qr.make(fit=True)
+    qr.make_image().save(module+"/doc/img/"+module+'_QRcode.png')
+except Exception as e: print(e)
+
+data = {
+        'wiki': "None",
+        'status': 2,
+        'name': module,
+        'longname_en': '%s module'%(module),
+        'longname_cs': 'Modul %s'%(module),
+        'short_en': '%s module'%(module),
+        'short_cs': 'Modul %s'%(module),
+        'image': "/doc/img/"+module+'_QRcode.png',
+        'autor': "", 
+        'ust': '',
+        'doc_cs':"",
+        'doc_en':"",
+        'category':"",
+        'root': root[root.find('/Modules')+9:],
+
+    }
+
+print (module+'/%s.json' %(module))
+with open(module+'/%s.json' %(module), 'w') as outfile:
+    json.dump(data, outfile, sort_keys=True, indent=4)

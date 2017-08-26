@@ -1,7 +1,8 @@
 all: utils
 
 install: utils
-	pip install pygments pyenchant markdown markdown_checklist
+	apt install python-qrcode python3-pip
+	pip3 install pygments pyenchant markdown markdown_checklist pyqrcode
 	cd utils; make install
 	cp mlabgen-module-check   /usr/bin/
 	cp mlabgen-module-html    /usr/bin/

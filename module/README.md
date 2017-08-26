@@ -17,7 +17,7 @@ module description
 module lead text
 <!--- ELead ---> 
 
-![LeadImg](DOC/SRC/img/module_top_big.jpg) 
+![LeadImg](doc/img/module_top_big.jpg) 
 
 
 <!--- Description --->

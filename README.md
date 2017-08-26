@@ -17,6 +17,7 @@ Installation
 
 ```sh
 sudo apt-get install python3 python3-pip make wkhtmltopdf
+sudo pip install kicad_netlist_reader
 sudo make install
 ```
 
