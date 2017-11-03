@@ -37,18 +37,18 @@ except Exception as e: print(e)
 
 data = {
         'wiki': "None",
-        'status': 2,
+        'status': 1,
         'name': module,
         'longname_en': '%s module'%(module),
         'longname_cs': 'Modul %s'%(module),
         'short_en': '%s module'%(module),
         'short_cs': 'Modul %s'%(module),
         'image': "/doc/img/"+module+'_QRcode.png',
-        'autor': "", 
-        'ust': '',
+        'autor[]': [], 
+        'ust': 'None',
         'doc_cs':"",
         'doc_en':"",
-        'category':"",
+        'category[]':[],
         'root': root[root.find('/Modules')+9:],
 
     }
