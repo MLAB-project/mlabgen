@@ -1,0 +1,117 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import mlabgen
+import sys
+import os
+import shutil
+import subprocess
+import jinja2
+from jinja2 import Template
+import csv, json
+import re
+
+LATEX_SUBS = (
+    (re.compile(r'\\'), r'\\textbackslash'),
+    (re.compile(r'([{}_#%&$])'), r'\\\1'),
+    (re.compile(r'~'), r'\~{}'),
+    (re.compile(r'\^'), r'\^{}'),
+    (re.compile(r'"'), r"''"),
+    (re.compile(r'\.\.\.+'), r'\\ldots'),
+    (re.compile(r'°'), r'$^\\circ$')
+)
+
+def escape_tex(value):
+    for pattern, replacement in LATEX_SUBS:
+        value = pattern.sub(replacement, value)
+    return value
+
+
+latex_jinja_env = jinja2.Environment(
+    block_start_string = '\BLOCK{',
+    block_end_string = '}',
+    variable_start_string = '\VAR{',
+    variable_end_string = '}',
+    comment_start_string = '\#{',
+    comment_end_string = '}',
+    line_statement_prefix = '%%',
+    line_comment_prefix = '%#',
+    trim_blocks = True,
+    autoescape = True,
+    loader = jinja2.FileSystemLoader(os.path.abspath('/'))
+)
+latex_jinja_env.filters['escape_tex'] = escape_tex
+
+
+class PrepareDoc():
+    def __init__(self):
+        print(self)
+        self.newDoc()
+
+    def newDoc(self):
+
+        options = mlabgen.getModuleInfo()
+        options['bom'] = []
+        with open('./hw/bom_base.csv') as csvfile:
+            bom = csv.reader(csvfile, delimiter=';')
+            for x in bom:
+                print(x)
+                options['bom'] += [[', '.join(eval(x[3]))]+ x + [len(eval(x[3]))]]
+
+        print (options['bom'])
+
+        #if not os.path.exists('doc/img/%s_QRcode.png'%options['name']):  # create the build directory if not existing
+        mlabgen.QRpermalink(options['name'])
+
+        if not os.path.exists('doc/src/'):  # create the build directory if not existing
+            os.makedirs('doc/src')
+        os.chdir('doc/src')
+
+
+        shutil.copyfile('/home/roman/repos/mlabgen/templates/MLABdoc.sty', 'MLABdoc.sty')
+
+
+        if not os.path.exists(options['name']+'.cs'+".tex"):
+            template = latex_jinja_env.get_template(os.path.realpath('/home/roman/repos/mlabgen/templates/module.cs.tex'))
+            renderer_template = template.render(**options)
+            with open(options['name']+'.cs'+".tex", "w") as f:  # saves tex_code to outpout file
+                f.write(renderer_template)
+
+
+        template = latex_jinja_env.get_template(os.path.realpath('/home/roman/repos/mlabgen/templates/module.cs.assembly.tex'))
+        renderer_template = template.render(**options)
+        with open(options['name']+'.cs'+".assembly.tex", "w") as f:  # saves tex_code to outpout file
+            f.write(renderer_template)
+
+
+        template = latex_jinja_env.get_template(os.path.realpath('/home/roman/repos/mlabgen/templates/module.cs.title.tex'))
+        renderer_template = template.render(**options)
+        with open(options['name']+'.cs'+".title.tex", "w") as f:  # saves tex_code to outpout file
+            f.write(renderer_template)
+
+        template = latex_jinja_env.get_template(os.path.realpath('/home/roman/repos/mlabgen/templates/README.md'))
+        renderer_template = template.render(**options)
+        with open('../../README.md', "w") as f:  # saves tex_code to outpout file
+            f.write(renderer_template)
+
+        template = latex_jinja_env.get_template(os.path.realpath('/home/roman/repos/mlabgen/templates/README.cs.md'))
+        renderer_template = template.render(**options)
+        with open('../../README.cs.md', "w") as f:  # saves tex_code to outpout file
+            f.write(renderer_template)
+        
+        proc = subprocess.Popen(["pdflatex",  options['name']+'.cs'+".tex" , "; cd ../.."])
+        proc.wait()
+        proc = subprocess.Popen(["pdflatex",  options['name']+'.cs'+".tex" , "; cd ../.."])
+        proc.wait()
+        shutil.copyfile(options['name']+'.cs'+".pdf", '../'+options['name']+'.cs'+".pdf",)
+        os.chdir('../..')
+
+        print(options['bom'])
+
+def main():
+    pd = PrepareDoc()
+
+
+
+if __name__ == '__main__':
+    main()

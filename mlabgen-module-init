@@ -30,7 +30,7 @@ for item in mlabgen.lspath(template):
 
 try:
     qr = qrcode.QRCode( version=4, error_correction=qrcode.constants.ERROR_CORRECT_Q, box_size=15, border=4)
-    qr.add_data('http://www.mlab.cz/PermaLink/'+module)
+    qr.add_data('https://www.mlab.cz/PermaLink/'+module)
     qr.make(fit=True)
     qr.make_image().save(module+"/doc/img/"+module+'_QRcode.png')
 except Exception as e: print(e)
@@ -45,6 +45,7 @@ data = {
         'short_cs': 'Modul %s'%(module),
         'image': "/doc/img/"+module+'_QRcode.png',
         'autor[]': [], 
+        'parameters': [],
         'ust': 'None',
         'doc_cs':"",
         'doc_en':"",

@@ -16,16 +16,22 @@ import sys
 
 import sqlite3
 import numpy as np
-import csv
+import csv, json
 
 localpath = os.getcwd()
 rootpath, project = os.path.split(localpath)
 
 
-filename= os.path.join(localpath, 'SCH_PCB', project+'.kicad_pcb')
 
+if not os.path.exists('doc/src/'):  # create the build directory if not existing
+    os.makedirs('doc/src')
+
+
+filename= os.path.join(localpath, 'hw', 'sch_pcb', project+'.kicad_pcb')
+
+print "soucastna cesta:", localpath
 print "Soubor projektu:", filename
-plotDir = "../new_CAM_PROFI/"
+plotDir = "../cam_profi/"
 
 board = pcbnew.LoadBoard(filename)
 pctl = pcbnew.PLOT_CONTROLLER(board)
@@ -66,13 +72,6 @@ for layer_info in plot_plan:
     pctl.OpenPlotfile(layer_info[0], PLOT_FORMAT_GERBER, layer_info[2])
     pctl.PlotLayer()
 
-    
-    #pctl.SetLayer(layer_info[1])
-    #pctl.OpenPlotfile(layer_info[0], PLOT_FORMAT_SVG, layer_info[2])
-    #pctl.PlotLayer()
-    #subprocess.Popen(["inkscape", "-z", "--verb=FitCanvasToDrawing", "--verb=FileSave", pctl.GetPlotFileName()])
-    
-
 
 drlwriter = EXCELLON_WRITER( board )
 drlwriter.SetMapFileFormat( PLOT_FORMAT_GERBER )
@@ -95,60 +94,134 @@ drlwriter.CreateDrillandMapFilesSet( pctl.GetPlotDirName(), genDrl, genMap );
 
 popt = pctl.GetPlotOptions()
 
-popt.SetOutputDirectory("../DOC/new_src/")
+popt.SetOutputDirectory("../../doc/src/")
 
 popt.SetPlotFrameRef(False)
-popt.SetLineWidth(FromMM(0.35))
+popt.SetLineWidth(FromMM(0.2))
 
 popt.SetAutoScale(False)
 popt.SetScale(1)
 popt.SetMirror(False)
 popt.SetUseGerberAttributes(True)
 popt.SetExcludeEdgeLayer(False);
-popt.SetScale(1)
-popt.SetUseAuxOrigin(True)
+popt.SetUseAuxOrigin(False)
 
 popt.SetSubtractMaskFromSilk(False)
 
 
-pctl.OpenPlotfile("MLABa", PLOT_FORMAT_SVG, "MLAB A")
+pctl.OpenPlotfile("top", PLOT_FORMAT_PDF, "MLAB A")
 pctl.SetLayer(F_SilkS)
 pctl.PlotLayer()
-pctl.SetLayer(F_Mask)
-pctl.PlotLayer()
-#proc = subprocess.Popen(["inkscape", "--without-gui", "--verb=FitCanvasToDrawing", "--verb=FileSave", pctl.GetPlotFileName()])
-proc = subprocess.Popen(["inkscape", "--verb=FitCanvasToDrawing", "--verb=FileSave", pctl.GetPlotFileName()])
-proc.wait()
-#proc = subprocess.Popen(["convert", "-density 600", pctl.GetPlotFileName(), pctl.GetPlotFileName().replace('.svg', '.png') ])
-#proc.wait()
+#pctl.SetLayer(F_Mask)
+#pctl.PlotLayer()
 
 
 popt.SetMirror(True)
-pctl.OpenPlotfile("MLABb", PLOT_FORMAT_SVG, "MLAB A")
+pctl.OpenPlotfile("bottom", PLOT_FORMAT_PDF, "MLAB A")
 pctl.SetLayer(B_SilkS)
 pctl.PlotLayer()
-#proc = subprocess.Popen(["inkscape", "--without-gui", "--verb=FitCanvasToDrawing", "--verb=FileSave", pctl.GetPlotFileName()])
-proc = subprocess.Popen(["inkscape", "--verb=FitCanvasToDrawing", "--verb=FileSave", pctl.GetPlotFileName()])
-proc.wait()
-#proc = subprocess.Popen(["inkscape", "-z -d 600", pctl.GetPlotFileName(), '-e', pctl.GetPlotFileName().replace('.svg', '.png') ])
-#proc = subprocess.Popen(["convert", "-density 600", pctl.GetPlotFileName(), '-set density 1200', pctl.GetPlotFileName().replace('.svg', '.png') ])
-#proc.wait()
-
-
 
 pctl.ClosePlot()
 
 
+os.chdir('doc/src/')
+print subprocess.Popen(['pdf-crop-margins','-ap','10','-p','0',project+'-top.pdf']).wait()
+print subprocess.Popen(['pdf-crop-margins','-ap','10','-p','0',project+'-bottom.pdf']).wait()
+os.chdir('../..')
+
+
+print("+++++++++++++++++++++++++++++++")
+
+
+
+
+##
+##
+##COMP
+## ---package
+##    ---value
+##       [label]
+##
+##
+# takto nejak by mela vypadat struktura
+#"JUMP_2x1": {
+#        "Mlab_Pin_Headers:Straight_1x02": {
+#            "JUMP_2x1": [
+#                "J10", 
+#                "J11", 
+#                "J9", 
+#                "J12", 
+#                "J13"
+#            ]
+#        }
+#    }, 
+#    "D_ZENER": {
+#        "Mlab_D:Diode-MiniMELF_Standard": {
+#            "BZV55C-5,6V": [
+#                "D1"
+#            ]
+#        }
+#    }, 
+#    "SHT31": {
+#        "Mlab_IO:DFN-8-1EP_2.4x2.4mm_Pitch0.5mm": {
+#            "SHT31": [
+#                "U1"
+#            ]
+#        }
+#    }, 
+
+
+filename= os.path.join(localpath, 'hw', 'sch_pcb', project+'.sch')
+sch = open(filename, 'r').read()
+sch_parts = sch.split("$")
+comp = {}
+
+for area in sch_parts:
+    #print(area)
+    if area[:4] == 'Comp':
+        lines = area.split('\n')
+        print(lines)
+        compo=lines[1].split(" ")[1]
+        label=lines[1].split(" ")[2]
+        value=lines[5].split('"')[1]
+        packa=lines[6].split('"')[1]
+
+        if '#' not in label:
+            print(label)
+            try:
+                packa = packa.split(":")[1]
+            except Exception as e:
+                pass
+            if not compo in comp:
+                comp[compo] = {}
+            if not packa in comp[compo]:
+                comp[compo][packa] = {}
+            if not value in comp[compo][packa]:
+                comp[compo][packa][value] = []
+
+            comp[compo][packa][value] += [label]
+
+import csv
+with open('hw/bom_base.csv', "wb") as csv_file:
+        writer = csv.writer(csv_file, delimiter=';')
+        for c in comp:
+            for p in comp[c]:
+                for v in comp[c][p]:
+                    print(c, p, v, comp[c][p][v])
+                    writer.writerow([c, p, v, comp[c][p][v]])
+
+print(json.dumps(comp, indent=4))
+'''
 conn = sqlite3.connect('example.db')
 try:
-    conn.execute('''DROP TABLE parts''')
+    conn.execute('DROP TABLE parts')
 except Exception, e:
     pass
-conn.execute('''CREATE TABLE parts (name text, package text, value text, fingerprint text)''')
+conn.execute('CREATE TABLE parts (name text, package text, value text, fingerprint text)')
 conn.commit()
 
 
-filename= os.path.join(localpath, 'SCH_PCB', project+'.sch')
+filename= os.path.join(localpath, 'hw', 'sch_pcb', project+'.sch')
 
 sch = open(filename, 'r').read()
 sch_parts = sch.split("$")
@@ -177,7 +250,7 @@ for area in sch_parts:
             print e
 
 
-mydt = np.dtype([ ('name', np.str_, 5), 
+mydt = np.dtype([('name', np.str_, 5), 
                  ('package', np.str_, 20),
                  ('value', np.str_, 10),
                  ('fingerprint', np.str_, 10)] )
@@ -193,3 +266,4 @@ with open(pctl.GetPlotDirName()+'../../NewBOM.csv', 'wb') as f:
 
 
 conn.commit()
+'''
