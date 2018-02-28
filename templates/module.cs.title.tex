@@ -1,0 +1,21 @@
+\uvod
+% nazev modulu
+{\VAR{name}}
+% kratky popis
+{\VAR{longname_cs}}
+%autor/i
+{\BLOCK{ for x in author } \VAR{author[x]['name']}\BLOCK{if loop.index != author|length}, \BLOCK{endif}\BLOCK{ endfor }}
+%obrazek
+{../../\VAR{image}}
+%abstrakt
+{\VAR{short_cs| escape_tex}}
+%tabulka
+{\BLOCK{for x in parameters}
+	\BLOCK{if "$" in x['name']}
+		\VAR{x['name'].replace('$',"")}
+	\BLOCK{else}
+		\VAR{x['name_cs']}
+	\BLOCK{endif}
+	 & \VAR{x['value']} \VAR{x.get('unit', '')} & \VAR{x['description_cs']}\\ \hline \BLOCK{endfor} }
+%obrazek QR kodu
+{../../doc/img/\VAR{name}_QRcode.png}

@@ -1,8 +1,11 @@
 from string import Template
 from os import walk
 from os.path import join
+import os
+import json
 import io
 import re
+import qrcode
 
 wordlist = ["MLAB", "LABoratory", "argv", "argc", "printf", "sqrt", "mA", "svg", "Descr", "bom", "sw", "ama",
             "Pcb", "pcb", "heatsink", "heatsinks", "microcontroler", "microcontroler's", "Tindie", "HumanName",
@@ -70,3 +73,22 @@ def lspath(directory="./"):
     for root, dirs, files in walk(directory):
         for item in dirs + files:
             yield(join(root, item))
+
+
+def getModuleInfo(path = None):
+    if not path:
+        path = os.path.realpath('.')
+    #print("Nastavena cesta je", path)
+    module = os.path.basename(os.path.normpath(path))
+    data = json.load(open(os.path.join(path, module+'.json')))
+    return data
+
+def QRpermalink(module, path=None):
+    if not path:
+        path = 'doc/img/%s_QRcode.png'%module
+    try:
+        qr = qrcode.QRCode( version=4, error_correction=qrcode.constants.ERROR_CORRECT_Q, box_size=15, border=4)
+        qr.add_data('https://www.mlab.cz/PermaLink/'+module)
+        qr.make(fit=True)
+        qr.make_image().save(path)
+    except Exception as e: raise(e)
