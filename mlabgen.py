@@ -3,6 +3,7 @@ from os import walk
 from os.path import join
 import os
 import json
+import csv
 import io
 import re
 import qrcode
@@ -92,3 +93,60 @@ def QRpermalink(module, path=None):
         qr.make(fit=True)
         qr.make_image().save(path)
     except Exception as e: raise(e)
+
+
+def BOM_ust(scheme, out = None):
+    sch = open(scheme, 'r').read()
+    sch_parts = sch.split("$")
+    ust_bom = []
+    
+    '''
+    Comp
+    L power:VCC #PWR0101
+    U 1 1 5A9A7508
+    P 6300 2900
+    F 0 "#PWR0101" H 6300 2750 50  0001 C CNN       # Reference
+    F 1 "VCC" H 6317 3073 50  0000 C CNN            # Hodnota (Value)
+    F 2 "" H 6300 2900 50  0001 C CNN               # Pouzdro
+    F 3 "" H 6300 2900 50  0001 C CNN               # dokumentace
+        1    6300 2900
+        1    0    0    -1  
+    '''
+
+    for area in sch_parts:    
+        lines = area.split('\n')
+        component = list(csv.reader(lines, delimiter=' ', quotechar='"'))
+
+        if component[0][0] == 'Comp':
+            param = {}
+            for comp in component:
+                try:
+                    if comp[0] == 'L':
+                        param['Name'] = comp[1]
+                        param['Ref'] = comp[2]
+
+                    elif comp[0] == 'U':
+                        param['Tstamp'] = comp[3]
+
+                    elif comp[0] == 'F':
+                        fn = int(comp[1])
+                        if fn == 0:
+                            pass
+                        elif fn == 1:
+                            param['Value'] = comp[2]    
+                        elif fn == 2:
+                            param['Package'] = comp[2]
+                        elif fn == 3:
+                            param['Datasheet'] = comp[2]
+                        elif fn == 4:
+                            param[comp[11]] = comp[2]
+
+                except Exception as e:
+                    pass
+            if not '#' in param['Ref']:
+                ust_bom += [param]
+    if out:
+        with open(out, 'w') as f:
+            json.dump(ust_bom, f, sort_keys = True, indent = 4)
+    
+    return(ust_bom)

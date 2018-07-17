@@ -11,6 +11,9 @@ from jinja2 import Template
 import csv, json
 import re
 
+import kicad_netlist_reader
+
+
 LATEX_SUBS = (
     (re.compile(r'\\'), r'\\textbackslash'),
     (re.compile(r'([{}_#%&$])'), r'\\\1'),
@@ -45,18 +48,28 @@ latex_jinja_env.filters['escape_tex'] = escape_tex
 
 class PrepareDoc():
     def __init__(self):
-        print(self)
         self.newDoc()
 
-    def newDoc(self):
+    def bom_list(self, name):
+        net = kicad_netlist_reader.netlist('/home/roman/repos/Modules/clock/RTC03A/hw/sch_pcb/RTC03A.net')
+        components = net.getInterestingComponents()
+        print(components)
 
+    def newDoc(self):
         options = mlabgen.getModuleInfo()
-        options['bom'] = []
-        with open('./hw/bom_base.csv') as csvfile:
-            bom = csv.reader(csvfile, delimiter=';')
-            for x in bom:
-                print(x)
-                options['bom'] += [[', '.join(eval(x[3]))]+ x + [len(eval(x[3]))]]
+
+        print(options)
+        options['bom'] = self.bom_list(options['name'])
+        
+        try:
+            with open('./hw/bom_base.csv') as csvfile:
+                bom = csv.reader(csvfile, delimiter=';')
+                for x in bom:
+                    options['bom'] += [[', '.join(eval(x[3]))]+ x + [len(eval(x[3]))]]
+        except Exception as e:
+            print("Chybí BOM soubor")
+            sys.exit(-1)
+        
 
         print (options['bom'])
 
@@ -70,40 +83,40 @@ class PrepareDoc():
 
         shutil.copyfile('/home/roman/repos/mlabgen/templates/MLABdoc.sty', 'MLABdoc.sty')
 
+        for lang in ['cs', 'en']:
 
-        if not os.path.exists(options['name']+'.cs'+".tex"):
-            template = latex_jinja_env.get_template(os.path.realpath('/home/roman/repos/mlabgen/templates/module.cs.tex'))
+            if not os.path.exists("{}.{}.tex".format(options['name'], lang)):
+                template = latex_jinja_env.get_template(os.path.realpath('/home/roman/repos/mlabgen/templates/module.{}.tex'.format(lang)))
+                renderer_template = template.render(**options)
+                with open("{}.{}.tex".format(options['name'], lang), "w") as f:  # saves tex_code to outpout file
+                    f.write(renderer_template)
+
+
+
+            template = latex_jinja_env.get_template(os.path.realpath('/home/roman/repos/mlabgen/templates/module.{}.assembly.tex'.format(lang) ))
             renderer_template = template.render(**options)
-            with open(options['name']+'.cs'+".tex", "w") as f:  # saves tex_code to outpout file
+            with open("{}.{}.assembly.tex".format(options['name'], lang), "w") as f:  # saves tex_code to outpout file
                 f.write(renderer_template)
 
+            template = latex_jinja_env.get_template(os.path.realpath('/home/roman/repos/mlabgen/templates/module.{}.title.tex'.format(lang) ))
+            renderer_template = template.render(**options)
+            with open("{}.{}.title.tex".format(options['name'], lang), "w") as f:  # saves tex_code to outpout file
+                f.write(renderer_template)
 
-        template = latex_jinja_env.get_template(os.path.realpath('/home/roman/repos/mlabgen/templates/module.cs.assembly.tex'))
-        renderer_template = template.render(**options)
-        with open(options['name']+'.cs'+".assembly.tex", "w") as f:  # saves tex_code to outpout file
-            f.write(renderer_template)
+            template = latex_jinja_env.get_template(os.path.realpath('/home/roman/repos/mlabgen/templates/README.md'))
+            renderer_template = template.render(**options)
+            with open('../../README.md', "w") as f:  # saves tex_code to outpout file
+                f.write(renderer_template)
 
+            #template = latex_jinja_env.get_template(os.path.realpath('/home/roman/repos/mlabgen/templates/README.cs.md'))
+            #renderer_template = template.render(**options)
+            #with open('../../README.cs.md', "w") as f:  # saves tex_code to outpout file
+            #    f.write(renderer_template)
+            
+            proc = subprocess.Popen(["pdflatex",  "{}.{}.tex".format(options['name'], lang) , "; cd ../.."])
+            proc.wait()
+            shutil.copyfile("{}.{}.pdf".format(options['name'], lang), "../{}.{}.pdf".format(options['name'], lang))
 
-        template = latex_jinja_env.get_template(os.path.realpath('/home/roman/repos/mlabgen/templates/module.cs.title.tex'))
-        renderer_template = template.render(**options)
-        with open(options['name']+'.cs'+".title.tex", "w") as f:  # saves tex_code to outpout file
-            f.write(renderer_template)
-
-        template = latex_jinja_env.get_template(os.path.realpath('/home/roman/repos/mlabgen/templates/README.md'))
-        renderer_template = template.render(**options)
-        with open('../../README.md', "w") as f:  # saves tex_code to outpout file
-            f.write(renderer_template)
-
-        template = latex_jinja_env.get_template(os.path.realpath('/home/roman/repos/mlabgen/templates/README.cs.md'))
-        renderer_template = template.render(**options)
-        with open('../../README.cs.md', "w") as f:  # saves tex_code to outpout file
-            f.write(renderer_template)
-        
-        proc = subprocess.Popen(["pdflatex",  options['name']+'.cs'+".tex" , "; cd ../.."])
-        proc.wait()
-        proc = subprocess.Popen(["pdflatex",  options['name']+'.cs'+".tex" , "; cd ../.."])
-        proc.wait()
-        shutil.copyfile(options['name']+'.cs'+".pdf", '../'+options['name']+'.cs'+".pdf",)
         os.chdir('../..')
 
         print(options['bom'])

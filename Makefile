@@ -25,23 +25,27 @@ develop: utils
 	apt install python-qrcode python3-pip python-jinja2
 	pip3 install pygments pyenchant markdown markdown_checklist pyqrcode
 	cd utils; make install
-	ln mlabgen-module-check   /usr/bin/
-	ln mlabgen-module-html    /usr/bin/
-	ln mlabgen-module-init    /usr/bin/
-	ln mlabgen-module-md      /usr/bin/
-	ln mlabgen-module-prjinfo /usr/bin/
-	ln mlabgen-module-readme-update   /usr/bin/
-	ln mlabgen-module-prepare-doc   /usr/bin/
-	ln mlabgen-module-make-production /usr/bin/
-	ln mlabgen-dir-html       /usr/bin/
-	ln mlabgen                /usr/bin/
-	ln mlabgen.py             /usr/lib/python3/dist-packages/
-	ln markdown_sch.py        /usr/lib/python3/dist-packages/
-	ln mlabgen.mk             /usr/include/
+	ln -f mlabgen-module-check   /usr/bin/
+	ln -f mlabgen-module-html    /usr/bin/
+	ln -f mlabgen-module-init    /usr/bin/
+	ln -f mlabgen-module-md      /usr/bin/
+	ln -f mlabgen-module-prjinfo /usr/bin/
+	ln -f mlabgen-module-readme-update   /usr/bin/
+	ln -f mlabgen-module-prepare-doc   /usr/bin/
+	ln -f mlabgen-module-make-production /usr/bin/
+	ln -f mlabgen-module-init-guide /usr/bin/
+	ln -f mlabgen-dir-html       /usr/bin/
+	ln -f mlabgen                /usr/bin/
+	ln -f mlabgen.py             /usr/lib/python3/dist-packages/
+	ln -f mlabgen.py             /usr/lib/python2.7/dist-packages/
+	ln -f markdown_sch.py        /usr/lib/python3/dist-packages/
+	ln -f mlabgen.mk             /usr/include/
 	mkdir -p /usr/share/mlabgen
-	cp -r module/              /usr/share/mlabgen/
-	cp -r templates/           /usr/share/mlabgen/
-	ln style.css              /usr/share/mlabgen/
+	#cp -r module/              /usr/share/mlabgen/
+	#cp -r templates/           /usr/share/mlabgen/
+	ln -sfn module/              /usr/share/mlabgen/
+	ln -sfn templates/           /usr/share/mlabgen/
+	ln -f style.css              /usr/share/mlabgen/
 
 
 utils:
