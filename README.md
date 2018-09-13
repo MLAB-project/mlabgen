@@ -21,7 +21,7 @@ sudo pip install kicad_netlist_reader
 sudo make install
 ```
 
-For develop version run ```sh sudo make devolp``` instend of ```sh sudo make install```
+For develop version run ```sh sudo make develop``` instend of ```sh sudo make install```
 
 
 How to initialize new module
