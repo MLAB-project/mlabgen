@@ -2,11 +2,11 @@ all: utils
 
 install: utils
 
-	mkdir module
-	mkdir module/doc
-	mkdir module/doc/img
-	mkdir module/doc/src
-	mkdir hw
+	mkdir -p module
+	mkdir -p module/doc
+	mkdir -p module/doc/img
+	mkdir -p module/doc/src
+	mkdir -p hw
 
 	apt install python-qrcode python3-qrcode python3-pip python-jinja2
 	pip3 install pygments pyenchant markdown markdown_checklist pyqrcode
