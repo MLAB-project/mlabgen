@@ -1,7 +1,7 @@
 all: utils
 
 install: utils
-	apt install python-qrcode python3-pip python-jinja2
+	apt install python-qrcode python3-qrcode python3-pip python-jinja2
 	pip3 install pygments pyenchant markdown markdown_checklist pyqrcode
 	cd utils; make install
 	cp mlabgen-module-check   /usr/bin/
@@ -16,13 +16,14 @@ install: utils
 	cp mlabgen.py             /usr/lib/python3/dist-packages/
 	cp markdown_sch.py        /usr/lib/python3/dist-packages/
 	cp mlabgen.mk             /usr/include/
+	rm -R /usr/share/mlabgen -f
 	mkdir -p /usr/share/mlabgen
 	cp -r module              /usr/share/mlabgen/
 	cp -r templates              /usr/share/mlabgen/
 	cp style.css              /usr/share/mlabgen/
 
 develop: utils
-	apt install python-qrcode python3-pip python-jinja2
+	apt install python-qrcode python3-qrcode python3-pip python-jinja2
 	pip3 install pygments pyenchant markdown markdown_checklist pyqrcode
 	cd utils; make install
 	ln -f mlabgen-module-check   /usr/bin/
@@ -40,12 +41,11 @@ develop: utils
 	ln -f mlabgen.py             /usr/lib/python2.7/dist-packages/
 	ln -f markdown_sch.py        /usr/lib/python3/dist-packages/
 	ln -f mlabgen.mk             /usr/include/
+	rm -R /usr/share/mlabgen -f
 	mkdir -p /usr/share/mlabgen
-	#cp -r module/              /usr/share/mlabgen/
-	#cp -r templates/           /usr/share/mlabgen/
-	ln -sfn module/              /usr/share/mlabgen/
-	ln -sfn templates/           /usr/share/mlabgen/
-	ln -f style.css              /usr/share/mlabgen/
+	cp -r module              /usr/share/mlabgen/
+	cp -r templates              /usr/share/mlabgen/
+	cp style.css              /usr/share/mlabgen/
 
 
 utils:

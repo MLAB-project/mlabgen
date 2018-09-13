@@ -32,8 +32,10 @@ try:
     qr = qrcode.QRCode( version=4, error_correction=qrcode.constants.ERROR_CORRECT_Q, box_size=15, border=4)
     qr.add_data('https://www.mlab.cz/PermaLink/'+module)
     qr.make(fit=True)
-    qr.make_image().save(module+"/doc/img/"+module+'_QRcode.png')
-except Exception as e: print(e)
+    QRpath = module+"/doc/img/"+module+'_QRcode.png'
+    print("Saving QR to path:", QRpath)
+    qr.make_image().save(QRpath)
+except Exception as e: print("QRerr> ",e)
 
 data = {
         'wiki': "None",
