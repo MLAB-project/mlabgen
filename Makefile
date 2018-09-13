@@ -1,6 +1,13 @@
 all: utils
 
 install: utils
+
+	mkdir module
+	mkdir module/doc
+	mkdir module/doc/img
+	mkdir module/doc/src
+	mkdir hw
+
 	apt install python-qrcode python3-qrcode python3-pip python-jinja2
 	pip3 install pygments pyenchant markdown markdown_checklist pyqrcode
 	cd utils; make install
@@ -23,6 +30,13 @@ install: utils
 	cp style.css              /usr/share/mlabgen/
 
 develop: utils
+
+	mkdir -p module
+	mkdir -p module/doc
+	mkdir -p module/doc/img
+	mkdir -p module/doc/src
+	mkdir -p  hw
+	
 	apt install python-qrcode python3-qrcode python3-pip python-jinja2
 	pip3 install pygments pyenchant markdown markdown_checklist pyqrcode
 	cd utils; make install
