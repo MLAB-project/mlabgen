@@ -8,7 +8,7 @@ install: utils
 	mkdir -p module/doc/src
 	mkdir -p hw
 
-	apt install python-qrcode python3-qrcode python3-pip python-jinja2
+	apt install python-qrcode python3-qrcode python3-pip python-jinja2 enchant
 	pip3 install pygments pyenchant markdown markdown_checklist pyqrcode
 	cd utils; make install
 	cp mlabgen-module-check   /usr/bin/
@@ -37,7 +37,7 @@ develop: utils
 	mkdir -p module/doc/src
 	mkdir -p  hw
 	
-	apt install python-qrcode python3-qrcode python3-pip python-jinja2
+	apt install python-qrcode python3-qrcode python3-pip python-jinja2 enchant
 	pip3 install pygments pyenchant markdown markdown_checklist pyqrcode
 	cd utils; make install
 	ln -f mlabgen-module-check   /usr/bin/
