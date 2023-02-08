@@ -16,6 +16,8 @@ Installation
 ------------
 
 ```sh
+git submodule init 
+git submodule update
 sudo apt-get install python3 python3-pip make wkhtmltopdf python3-qrcode
 sudo pip install kicad_netlist_reader
 sudo make install
