@@ -1,0 +1,3 @@
+[submodule "kicad-mlab"]
+	path = kicad-mlab
+	url = git@github.com:MLAB-project/kicad-mlab.git
